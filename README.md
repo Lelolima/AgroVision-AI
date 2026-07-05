@@ -205,7 +205,7 @@ Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICE
 
 ## 👥 Autores
 
-- **Leonardo Lima** - [Lelolima](https://github.com/Lelolima)
+- **Wellington de Lima Catarina** - [Lelolima](https://github.com/Lelolima)
 
 ## 🙏 Agradecimentos
 
