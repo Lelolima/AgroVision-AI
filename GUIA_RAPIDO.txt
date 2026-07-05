@@ -1,0 +1,144 @@
+================================================================================
+                    AGROVISION AI - GUIA RÁPIDO
+================================================================================
+
+📁 LOCALIZAÇÃO DO PROJETO:
+   C:\Users\Thinkin pad 8g\AgroVision-AI
+
+================================================================================
+🚀 INSTALAÇÃO RÁPIDA (Windows)
+================================================================================
+
+1. Abra o PowerShell ou CMD como Administrador
+
+2. Navegue até o diretório do projeto:
+   cd C:\Users\Thinkin pad 8g\AgroVision-AI
+
+3. Execute o script de setup:
+   scripts\setup.bat
+
+4. Ou faça manualmente:
+   python -m venv venv
+   venv\Scripts\activate
+   pip install -r requirements.txt
+   python scripts\download_models.py
+   copy .env.example .env
+
+================================================================================
+▶️ EXECUTAR DEMO
+================================================================================
+
+   python demo.py
+
+================================================================================
+🌐 INICIAR SERVIDOR API
+================================================================================
+
+   python -m agrovision.api.app
+
+   Acesse: http://localhost:8000
+
+================================================================================
+🐳 USAR DOCKER
+================================================================================
+
+   docker-compose up -d
+
+   Serviços:
+   - API: http://localhost:8000
+   - Web (nginx): http://localhost
+
+================================================================================
+📊 ESTRUTURA DE ARQUIVOS
+================================================================================
+
+AgroVision-AI/
+├── README.md                 # Documentação principal
+├── requirements.txt          # Dependências
+├── docker-compose.yml        # Docker Compose
+├── demo.py                   # Script de demonstração
+├── PROJETO_CONCLUIDO.md      # Resumo completo
+├── struct/
+│   ├── api/app.py            # API FastAPI
+│   ├── models/               # Modelos ML
+│   │   ├── detector.py       # Detecção YOLO
+│   │   ├── tracker.py        # Tracking
+│   │   ├── weight_estimator.py
+│   │   └── behavior_classifier.py
+│   └── utils/                # Utilitários
+│       ├── logger.py
+│       └── video.py
+├── web/
+│   ├── index.html            # Dashboard SVG animado
+│   ├── css/styles.css        # Estilos e animações CSS
+│   └── js/dashboard.js       # Lógica do dashboard
+├── docker/
+│   ├── Dockerfile
+│   └── nginx.conf
+├── scripts/
+│   ├── download_models.py
+│   └── setup.bat
+├── tests/
+│   └── test_api.py
+└── docs/
+    ├── CORRECOES_REALIZADAS.md
+    └── TECHNICAL_DOCUMENTATION.md
+
+================================================================================
+🎨 ANIMAÇÕES CSS DO DASHBOARD
+================================================================================
+
+O dashboard inclui animações CSS em tempo real:
+
+1. Animais SVG se movendo (animal-walk)
+2. Bounding boxes tracejadas animadas (bbox-dash)
+3. Linha de scanning vertical (scan-move)
+4. Indicador "Em Tempo Real" pulsando (pulse-live)
+5. Gráficos de atividade animados (line-draw, bar-grow)
+6. Loading spinner (spinner-rotate)
+7. Transições suaves em todos elementos
+
+================================================================================
+📋 ENDPOINTS DA API
+================================================================================
+
+GET  /                 - Dashboard web
+GET  /api/health       - Health check
+POST /api/upload/video - Upload de vídeo
+POST /api/analyze/video - Análise de vídeo
+WS   /ws/detect        - WebSocket tempo real
+
+================================================================================
+🔧 COMANDOS ÚTEIS
+================================================================================
+
+# Testes
+pytest tests/ -v
+
+# Instalar como pacote
+pip install -e .
+
+# Ver versão
+python -c "import agrovision; print(agrovision.__version__)"
+
+# Download modelos
+python scripts/download_models.py
+
+================================================================================
+📝 GIT - PRÓXIMOS PASSOS
+================================================================================
+
+cd C:\Users\Thinkin pad 8g\AgroVision-AI
+git init
+git add .
+git commit -m "feat: AgroVision AI v2.0 - Sistema completo"
+git remote add origin https://github.com/Lelolima/AgroVision-AI.git
+git push -u origin main
+
+================================================================================
+✨ VERSÃO: 2.0.0
+================================================================================
+Data: 2024-07-04
+Autor: Leonardo Lima (com assistência Claude AI)
+Licença: MIT
+================================================================================
