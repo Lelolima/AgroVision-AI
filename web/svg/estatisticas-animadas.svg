@@ -1,0 +1,442 @@
+<!--
+  AgroVision AI - Painel de Estatísticas Animadas
+  Demonstração de Gráficos e Métricas em Tempo Real
+  :::::::::::::::::::::::::::::::::::::::::::::::::::::::
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="1400" height="900">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#1e293b"/>
+    </linearGradient>
+
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#34d399"/>
+    </linearGradient>
+
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#60a5fa"/>
+    </linearGradient>
+
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f59e0b"/>
+      <stop offset="100%" style="stop-color:#fbbf24"/>
+    </linearGradient>
+
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8b5cf6"/>
+      <stop offset="100%" style="stop-color:#a78bfa"/>
+    </linearGradient>
+
+    <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:0"/>
+    </linearGradient>
+
+    <filter id="glow3">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <style>
+      <![CDATA[
+        @keyframes counterTick {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.08); }
+        }
+
+        @keyframes lineDraw {
+          from { stroke-dasharray: 0 1000; }
+          to { stroke-dasharray: 1000 1000; }
+        }
+
+        @keyframes barExpand {
+          from { transform: scaleX(0); opacity: 0.5; }
+          to { transform: scaleX(1); opacity: 1; }
+        }
+
+        @keyframes pieFill {
+          from { stroke-dashoffset: 283; }
+          to { stroke-dashoffset: 71; }
+        }
+
+        @keyframes pulseRing {
+          0% { transform: scale(1); opacity: 0.8; }
+          50% { transform: scale(1.1); opacity: 0.4; }
+          100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+
+        @keyframes shimmer {
+          0% { opacity: 0.6; }
+          50% { opacity: 1; }
+          100% { opacity: 0.6; }
+        }
+
+        .counter {
+          animation: counterTick 2s ease-in-out infinite;
+        }
+
+        .line-chart {
+          stroke-dasharray: 1000 1000;
+          stroke-dashoffset: 1000;
+          animation: lineDraw 3s ease-out forwards;
+        }
+
+        .bar {
+          transform-origin: left;
+          animation: barExpand 1.2s ease-out;
+        }
+
+        .bar:nth-child(1) { animation-delay: 0.1s; }
+        .bar:nth-child(2) { animation-delay: 0.2s; }
+        .bar:nth-child(3) { animation-delay: 0.3s; }
+        .bar:nth-child(4) { animation-delay: 0.4s; }
+        .bar:nth-child(5) { animation-delay: 0.5s; }
+        .bar:nth-child(6) { animation-delay: 0.6s; }
+
+        .pie-ring {
+          stroke-dasharray: 283 283;
+          stroke-dashoffset: 283;
+          animation: pieFill 2s ease-out forwards;
+        }
+
+        .floating {
+          animation: float 4s ease-in-out infinite;
+        }
+
+        .shimmer {
+          animation: shimmer 2s ease-in-out infinite;
+        }
+      ]]>
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="900" fill="url(#bgGrad)"/>
+
+  <!-- Header -->
+  <rect width="1400" height="80" fill="#1e293b"/>
+  <rect width="1400" height="4" y="80" fill="url(#greenGrad)"/>
+
+  <text x="40" y="35" font-family="Arial" font-size="22" font-weight="bold" fill="#f1f5f9">
+    📊 Estatísticas em Tempo Real
+  </text>
+
+  <text x="40" y="60" font-family="Arial" font-size="13" fill="#94a3b8">
+    AgroVision AI - Dashboard Analítico
+  </text>
+
+  <!-- Status -->
+  <g transform="translate(1250, 25)">
+    <rect width="120" height="36" rx="18" fill="#10b981" opacity="0.15"/>
+    <circle cx="18" cy="18" r="7" fill="#10b981">
+      <animate attributeName="opacity" values="1;0.4;1" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <text x="35" y="23" font-family="Arial" font-size="12" font-weight="bold" fill="#10b981">
+      AO VIVO
+    </text>
+  </g>
+
+  <!-- Cards de Métricas -->
+  <g transform="translate(40, 110)">
+    <!-- Card 1 -->
+    <g class="floating" style="animation-delay: 0s;">
+      <rect width="260" height="140" rx="16" fill="#1e293b"/>
+      <rect width="6" height="140" fill="url(#greenGrad)" rx="3"/>
+      <circle cx="230" cy="30" r="20" fill="#10b981" opacity="0.2"/>
+      <text x="230" y="36" font-family="Arial" font-size="16" text-anchor="middle">🐄</text>
+
+      <text x="25" y="40" font-family="Arial" font-size="12" fill="#94a3b8">Total Animais</text>
+      <text x="25" y="85" font-family="Arial" font-size="42" fill="#f1f5f9" font-weight="bold" class="counter">24</text>
+      <text x="140" y="85" font-family="Arial" font-size="16" fill="#94a3b8">cabeças</text>
+
+      <!-- Sparkline -->
+      <polyline points="25,110 50,105 75,108 100,95 125,100 150,88 175,92 200,85 230,90"
+                fill="none" stroke="url(#greenGrad)" stroke-width="2" opacity="0.6"/>
+      <polygon points="25,110 25,120 230,120 230,90 200,85 175,92 150,88 125,100 100,95 75,108 50,105"
+               fill="url(#greenGrad)" opacity="0.1"/>
+    </g>
+
+    <!-- Card 2 -->
+    <g transform="translate(280, 0)" class="floating" style="animation-delay: 0.2s;">
+      <rect width="260" height="140" rx="16" fill="#1e293b"/>
+      <rect width="6" height="140" fill="url(#amberGrad)" rx="3"/>
+      <circle cx="230" cy="30" r="20" fill="#f59e0b" opacity="0.2"/>
+      <text x="230" y="36" font-family="Arial" font-size="16" text-anchor="middle">⚖️</text>
+
+      <text x="25" y="40" font-family="Arial" font-size="12" fill="#94a3b8">Peso Médio</text>
+      <text x="25" y="85" font-family="Arial" font-size="42" fill="#f1f5f9" font-weight="bold" class="counter">156</text>
+      <text x="140" y="85" font-family="Arial" font-size="16" fill="#94a3b8">kg</text>
+
+      <!-- Mini gauge -->
+      <g transform="translate(200, 90)">
+        <circle cx="25" cy="25" r="20" fill="none" stroke="#334155" stroke-width="4"/>
+        <path d="M 25 5 A 20 20 0 0 1 42 15" fill="none" stroke="url(#amberGrad)" stroke-width="4" stroke-linecap="round">
+          <animate attributeName="stroke-dasharray" from="0 100" to="25 100" dur="1.5s" fill="freeze"/>
+        </path>
+      </g>
+    </g>
+
+    <!-- Card 3 -->
+    <g transform="translate(560, 0)" class="floating" style="animation-delay: 0.4s;">
+      <rect width="260" height="140" rx="16" fill="#1e293b"/>
+      <rect width="6" height="140" fill="url(#blueGrad)" rx="3"/>
+      <circle cx="230" cy="30" r="20" fill="#3b82f6" opacity="0.2"/>
+      <text x="230" y="36" font-family="Arial" font-size="16" text-anchor="middle">📈</text>
+
+      <text x="25" y="40" font-family="Arial" font-size="12" fill="#94a3b8">Precisão</text>
+      <text x="25" y="85" font-family="Arial" font-size="42" fill="#f1f5f9" font-weight="bold" class="counter">94</text>
+      <text x="140" y="85" font-family="Arial" font-size="16" fill="#94a3b8">%</text>
+
+      <!-- Progress bars -->
+      <g transform="translate(25, 105)">
+        <rect width="180" height="6" fill="#334155" rx="3"/>
+        <rect width="169" height="6" fill="url(#blueGrad)" rx="3">
+          <animate attributeName="width" from="0" to="169" dur="1s" fill="freeze"/>
+        </rect>
+      </g>
+    </g>
+
+    <!-- Card 4 -->
+    <g transform="translate(840, 0)" class="floating" style="animation-delay: 0.6s;">
+      <rect width="260" height="140" rx="16" fill="#1e293b"/>
+      <rect width="6" height="140" fill="url(#purpleGrad)" rx="3"/>
+      <circle cx="230" cy="30" r="20" fill="#8b5cf6" opacity="0.2"/>
+      <text x="230" y="36" font-family="Arial" font-size="16" text-anchor="middle">⏱️</text>
+
+      <text x="25" y="40" font-family="Arial" font-size="12" fill="#94a3b8">Tempo Sessão</text>
+      <text x="25" y="85" font-family="monospace" font-size="36" fill="#f1f5f9" font-weight="bold" class="shimmer">02:47</text>
+      <text x="160" y="85" font-family="Arial" font-size="16" fill="#94a3b8">min</text>
+
+      <!-- Timer bar -->
+      <g transform="translate(25, 110)">
+        <rect width="200" height="4" fill="#334155" rx="2"/>
+        <rect width="95" height="4" fill="url(#purpleGrad)" rx="2">
+          <animate attributeName="width" values="0;95;0" dur="10s" repeatCount="indefinite"/>
+        </rect>
+      </g>
+    </g>
+
+    <!-- Card 5 -->
+    <g transform="translate(1120, 0)" class="floating" style="animation-delay: 0.8s;">
+      <rect width="260" height="140" rx="16" fill="#1e293b"/>
+      <rect width="6" height="140" fill="#ef4444" rx="3"/>
+      <circle cx="230" cy="30" r="20" fill="#ef4444" opacity="0.2"/>
+      <text x="230" y="36" font-family="Arial" font-size="16" text-anchor="middle">🔔</text>
+
+      <text x="25" y="40" font-family="Arial" font-size="12" fill="#94a3b8">Alertas</text>
+      <text x="25" y="85" font-family="Arial" font-size="42" fill="#f1f5f9" font-weight="bold" class="counter">3</text>
+      <text x="70" y="85" font-family="Arial" font-size="16" fill="#94a3b8">hoje</text>
+
+      <!-- Alert indicators -->
+      <g transform="translate(180, 70)">
+        <circle cx="15" cy="15" r="8" fill="#ef4444">
+          <animate attributeName="opacity" values="1;0.3;1" dur="0.8s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="40" cy="15" r="8" fill="#ef4444">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="0.8s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="65" cy="15" r="8" fill="#ef4444" opacity="0.5"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- Área de Gráficos -->
+  <g transform="translate(40, 270)">
+    <rect width="1320" height="280" rx="16" fill="#1e293b"/>
+
+    <!-- Título -->
+    <text x="25" y="35" font-family="Arial" font-size="16" font-weight="bold" fill="#f1f5f9">
+      📈 Atividade por Hora
+    </text>
+
+    <!-- Área do Gráfico -->
+    <g transform="translate(25, 55)">
+      <!-- Grid -->
+      <rect width="1270" height="180" fill="#0f172a" rx="8"/>
+
+      <!-- Linhas de grid -->
+      <g stroke="#334155" stroke-width="1" opacity="0.5">
+        <line x1="0" y1="0" x2="1270" y2="0"/>
+        <line x1="0" y1="45" x2="1270" y2="45"/>
+        <line x1="0" y1="90" x2="1270" y2="90"/>
+        <line x1="0" y1="135" x2="1270" y2="135"/>
+        <line x1="0" y1="180" x2="1270" y2="180"/>
+      </g>
+
+      <!-- Área preenchida -->
+      <path d="M 0 180 L 0 140 L 100 120 L 200 135 L 300 90 L 400 100 L 500 70 L 600 85 L 700 60 L 800 75 L 900 50 L 1000 65 L 1100 40 L 1200 55 L 1270 30 L 1270 180 Z"
+            fill="url(#areaGrad)"/>
+
+      <!-- Linha do gráfico -->
+      <polyline class="line-chart"
+                points="0,140 100,120 200,135 300,90 400,100 500,70 600,85 700,60 800,75 900,50 1000,65 1100,40 1200,55 1270,30"
+                fill="none" stroke="url(#greenGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                filter="url(#glow3)"/>
+
+      <!-- Pontos -->
+      <g fill="#10b981">
+        <circle cx="0" cy="140" r="4"/>
+        <circle cx="100" cy="120" r="4"/>
+        <circle cx="200" cy="135" r="4"/>
+        <circle cx="300" cy="90" r="4"/>
+        <circle cx="400" cy="100" r="4"/>
+        <circle cx="500" cy="70" r="4"/>
+        <circle cx="600" cy="85" r="4"/>
+        <circle cx="700" cy="60" r="4"/>
+        <circle cx="800" cy="75" r="4"/>
+        <circle cx="900" cy="50" r="4"/>
+        <circle cx="1000" cy="65" r="4"/>
+        <circle cx="1100" cy="40" r="4"/>
+        <circle cx="1200" cy="55" r="4"/>
+        <circle cx="1270" cy="30" r="4"/>
+      </g>
+
+      <!-- Labels X -->
+      <g font-family="Arial" font-size="11" fill="#64748b" text-anchor="middle">
+        <text x="0" y="200">00:00</text>
+        <text x="212" y="200">04:00</text>
+        <text x="424" y="200">08:00</text>
+        <text x="636" y="200">12:00</text>
+        <text x="848" y="200">16:00</text>
+        <text x="1060" y="200">20:00</text>
+        <text x="1270" y="200">23:59</text>
+      </g>
+
+      <!-- Labels Y -->
+      <g font-family="Arial" font-size="11" fill="#64748b" text-anchor="end">
+        <text x="-10" y="5">100</text>
+        <text x="-10" y="50">75</text>
+        <text x="-10" y="95">50</text>
+        <text x="-10" y="140">25</text>
+        <text x="-10" y="185">0</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Seção Inferior - Gráficos Diversos -->
+  <g transform="translate(40, 570)">
+    <!-- Gráfico de Barras - Comportamento -->
+    <g>
+      <rect width="400" height="280" rx="16" fill="#1e293b"/>
+      <text x="25" y="35" font-family="Arial" font-size="16" font-weight="bold" fill="#f1f5f9">
+        Comportamento
+      </text>
+
+      <g transform="translate(25, 60)">
+        <rect width="350" height="180" fill="#0f172a" rx="8"/>
+
+        <!-- Barras -->
+        <g transform="translate(30, 150)">
+          <!-- Calmo -->
+          <rect class="bar" x="0" y="-100" width="45" height="100" fill="url(#greenGrad)" rx="6"/>
+          <text x="22" y="-110" font-family="monospace" font-size="12" fill="#10b981" text-anchor="middle">58%</text>
+          <text x="22" y="20" font-family="Arial" font-size="10" fill="#94a3b8" text-anchor="middle">Calmo</text>
+
+          <!-- Agitado -->
+          <rect class="bar" x="75" y="-25" width="45" height="25" fill="#ef4444" rx="6"/>
+          <text x="97" y="-35" font-family="monospace" font-size="12" fill="#ef4444" text-anchor="middle">15%</text>
+          <text x="97" y="20" font-family="Arial" font-size="10" fill="#94a3b8" text-anchor="middle">Agitado</text>
+
+          <!-- Alimentando -->
+          <rect class="bar" x="150" y="-70" width="45" height="70" fill="url(#amberGrad)" rx="6"/>
+          <text x="172" y="-80" font-family="monospace" font-size="12" fill="#f59e0b" text-anchor="middle">41%</text>
+          <text x="172" y="20" font-family="Arial" font-size="10" fill="#94a3b8" text-anchor="middle">Aliment.</text>
+
+          <!-- Caminhando -->
+          <rect class="bar" x="225" y="-45" width="45" height="45" fill="url(#blueGrad)" rx="6"/>
+          <text x="247" y="-55" font-family="monospace" font-size="12" fill="#3b82f6" text-anchor="middle">26%</text>
+          <text x="247" y="20" font-family="Arial" font-size="10" fill="#94a3b8" text-anchor="middle">Caminh.</text>
+        </g>
+      </g>
+    </g>
+
+    <!-- Gráfico de Rosca - Distribuição -->
+    <g transform="translate(440, 0)">
+      <rect width="400" height="280" rx="16" fill="#1e293b"/>
+      <text x="25" y="35" font-family="Arial" font-size="16" font-weight="bold" fill="#f1f5f9">
+        Distribuição por Peso
+      </text>
+
+      <g transform="translate(200, 150)">
+        <!-- Rosca externa -->
+        <circle cx="0" cy="0" r="70" fill="none" stroke="#334155" stroke-width="20"/>
+        <circle class="pie-ring" cx="0" cy="0" r="70" fill="none" stroke="url(#greenGrad)" stroke-width="20"
+                stroke-dasharray="220 220" transform="rotate(-90)" style="animation-delay: 0.2s"/>
+
+        <!-- Rosca interna -->
+        <circle cx="0" cy="0" r="45" fill="#0f172a"/>
+
+        <!-- Texto central -->
+        <text x="0" y="-5" font-family="Arial" font-size="24" font-weight="bold" fill="#f1f5f9" text-anchor="middle">24</text>
+        <text x="0" y="18" font-family="Arial" font-size="10" fill="#94a3b8" text-anchor="middle">animais</text>
+      </g>
+
+      <!-- Legenda -->
+      <g transform="translate(25, 220)" font-family="Arial" font-size="10">
+        <rect x="0" y="0" width="10" height="10" fill="#10b981" rx="2"/>
+        <text x="20" y="9" fill="#94a3b8"><100kg (25%)</text>
+
+        <rect x="80" y="0" width="10" height="10" fill="#34d399" rx="2"/>
+        <text x="100" y="9" fill="#94a3b8">100-150kg (35%)</text>
+
+        <rect x="180" y="0" width="10" height="10" fill="#10b981" opacity="0.7" rx="2"/>
+        <text x="200" y="9" fill="#94a3b8">>150kg (40%)</text>
+      </g>
+    </g>
+
+    <!-- Timeline de Eventos -->
+    <g transform="translate(880, 0)">
+      <rect width="400" height="280" rx="16" fill="#1e293b"/>
+      <text x="25" y="35" font-family="Arial" font-size="16" font-weight="bold" fill="#f1f5f9">
+        📅 Eventos Recentes
+      </text>
+
+      <g transform="translate(25, 60)">
+        <rect width="350" height="180" fill="#0f172a" rx="8"/>
+
+        <!-- Timeline items -->
+        <g transform="translate(20, 30)">
+          <!-- Item 1 -->
+          <circle cx="10" cy="0" r="6" fill="#10b981"/>
+          <line x1="10" y1="0" x2="10" y2="35" stroke="#334155" stroke-width="2"/>
+          <text x="30" y="-3" font-family="Arial" font-size="10" fill="#10b981">08:45</text>
+          <text x="30" y="12" font-family="Arial" font-size="11" fill="#f1f5f9">Detecção #024</text>
+
+          <!-- Item 2 -->
+          <circle cx="10" cy="50" r="6" fill="#3b82f6"/>
+          <line x1="10" y1="50" x2="10" y2="85" stroke="#334155" stroke-width="2"/>
+          <text x="30" y="47" font-family="Arial" font-size="10" fill="#3b82f6">09:12</text>
+          <text x="30" y="62" font-family="Arial" font-size="11" fill="#f1f5f9">Peso atualizado</text>
+
+          <!-- Item 3 -->
+          <circle cx="10" cy="100" r="6" fill="#f59e0b"/>
+          <line x1="10" y1="100" x2="10" y2="135" stroke="#334155" stroke-width="2"/>
+          <text x="30" y="97" font-family="Arial" font-size="10" fill="#f59e0b">10:03</text>
+          <text x="30" y="112" font-family="Arial" font-size="11" fill="#f1f5f9">Alerta comportamiento</text>
+
+          <!-- Item 4 -->
+          <circle cx="10" cy="150" r="6" fill="#8b5cf6"/>
+          <text x="30" y="147" font-family="Arial" font-size="10" fill="#8b5cf6">10:47</text>
+          <text x="30" y="162" font-family="Arial" font-size="11" fill="#f1f5f9">Sessão iniciada</text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Footer -->
+  <rect width="1400" height="50" y="850" fill="#1e293b"/>
+  <text x="700" y="882" font-family="Arial" font-size="12" fill="#64748b" text-anchor="middle">
+    AgroVision AI v2.0 - Todas as métricas atualizadas em tempo real
+  </text>
+</svg>

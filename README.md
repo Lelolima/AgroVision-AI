@@ -76,10 +76,50 @@ docker-compose up
 
 Acesse o dashboard em `http://localhost:8000/` para visualizar:
 
-- Feed simulado com animações SVG/CSS
-- Contadores em tempo real
-- Status de processamento
-- Histórico de detecções
+- **Feed simulado** com cena de fazenda e vacas animadas
+- **Contadores em tempo real**: total de animais, peso médio, comportamento dominante, tempo de sessão
+- **Painel lateral** com lista de animais detectados com detalhes (ID, peso, comportamento)
+- **Gráfico de atividade por hora**
+- **Log de eventos** com histórico de detecções e alertas
+
+### 📁 Estrutura do Diretório `web/`
+
+```
+web/
+├── index.html                  # Dashboard principal
+├── css/
+│   └── styles.css            # Estilos CSS e animações
+├── js/
+│   └── dashboard.js          # Lógica JavaScript do dashboard (simulação em tempo real)
+└── svg/                      # SVGs animados e documentação
+    ├── README.md
+    ├── index.html
+    ├── dashboard-tempo-real.svg
+    ├── deteccao-tempo-real.svg
+    └── estatisticas-animadas.svg
+```
+
+### 🎨 Dashboard Principal (`web/index.html`)
+
+Interface principal do sistema com:
+
+- **Cabeçalho** com logo e status "Em Tempo Real"
+- **Cards de estatísticas** (total de animais, peso médio, comportamento dominante, tempo de sessão)
+- **Feed de vídeo simulado** com vacas se movendo em cena SVG
+- **Painel lateral** com lista de animais detectados
+- **Gráfico de atividade** e **log de eventos** na parte inferior
+
+### 🎨 SVGs Animados (`web/svg/`)
+
+O projeto inclui **3 SVGs animados** que demonstram visualmente as capacidades do sistema:
+
+| Arquivo | Descrição | Animações |
+|---------|-----------|-----------|
+| `web/svg/dashboard-tempo-real.svg` | Dashboard completo com animais em pasto | • Caminhada dos animais (`animalWalk`)<br>• Scanning em tempo real (`scanMove`)<br>• Bounding boxes tracejadas (`bboxDash`)<br>• Indicadores de status (`pulse`)<br>• Gráfico de atividade animado (`barGrow`) |
+| `web/svg/deteccao-tempo-real.svg` | Painel detalhado de detecção e tracking | • Bounding boxes com dash animado (`bboxDashMove`)<br>• Pulse para novas detecções (`newDetectionPulse`)<br>• Scanning vertical (`scanVertical`)<br>• Barras de confiança (`confidenceGrow`)<br>• Labels flutuantes (`labelFloat`) |
+| `web/svg/estatisticas-animadas.svg` | Painel de estatísticas e métricas | • Contadores com pulse (`counterTick`)<br>• Gráfico de linha desenhando (`lineDraw`)<br>• Barras expandindo (`barExpand`)<br>• Gráfico de rosca preenchendo (`pieFill`)<br>• Elementos flutuantes (`float`) |
+
+**Para visualizar:** Abra qualquer arquivo SVG diretamente no navegador, acesse `web/svg/index.html` para navegar entre eles, ou visualize via dashboard principal.
 
 ## 📊 Estrutura do Projeto
 
@@ -87,36 +127,56 @@ Acesse o dashboard em `http://localhost:8000/` para visualizar:
 AgroVision-AI/
 ├── agrovision/
 │   ├── api/
-│   │   └── app.py          # API FastAPI
+│   │   ├── __init__.py
+│   │   ├── app.py          # API FastAPI
+│   │   └── routes.py       # Rotas da API
+│   ├── config/
+│   │   ├── __init__.py
+│   │   └── settings.py     # Configurações
 │   ├── models/
-│   │   ├── detector.py     # Detecção YOLO
-│   │   ├── tracker.py      # Tracking DeepSort
-│   │   ├── weight_est.py   # Estimativa de peso
-│   │   └── behavior.py     # Classificador de comportamento
-│   ├── utils/
-│   │   ├── video.py        # Processamento de vídeo
-│   │   ├── database.py     # Banco de dados
-│   │   └── logger.py       # Logging estruturado
-│   └── config/
-│       └── settings.py     # Configurações
+│   │   ├── __init__.py
+│   │   ├── behavior_classifier.py  # Classificador de comportamento
+│   │   ├── detector.py           # Detecção YOLO
+│   │   ├── tracker.py          # Tracking DeepSort
+│   │   └── weight_estimator.py  # Estimativa de peso
+│   └── utils/
+│       ├── __init__.py
+│       ├── logger.py       # Logging estruturado
+│       └── video.py        # Processamento de vídeo
 ├── web/
-│   ├── index.html          # Dashboard web
+│   ├── index.html          # Dashboard principal
 │   ├── css/
 │   │   └── styles.css      # Estilos e animações
 │   ├── js/
 │   │   └── dashboard.js    # Lógica do dashboard
 │   └── svg/
-│       └── animations.svg  # SVGs animados
+│       ├── README.md
+│       ├── index.html
+│       ├── dashboard-tempo-real.svg
+│       ├── deteccao-tempo-real.svg
+│       └── estatisticas-animadas.svg
 ├── scripts/
-│   ├── download_models.py  # Download de modelos
-│   └── setup.sh            # Setup completo
+│   └── download_models.py  # Download de modelos
 ├── docker/
-│   └── Dockerfile          # Configuração Docker
+│   ├── Dockerfile          # Configuração Docker
+│   └── nginx.conf
 ├── tests/
 │   └── test_api.py         # Testes unitários
-├── requirements.txt
+├── docs/
+│   ├── CODE_REVIEW.md
+│   ├── CORRECOES_APLICADAS.md
+│   ├── CORRECOES_REALIZADAS.md
+│   └── TECHNICAL_DOCUMENTATION.md
+├── .env.example
+├── .gitignore
+├── GUIA_RAPIDO.txt
+├── LICENSE
+├── PROJETO_CONCLUIDO.md
+├── README.md
+├── demo.py
 ├── docker-compose.yml
-└── README.md
+├── requirements.txt
+└── setup.py
 ```
 
 ## 🧪 Testes

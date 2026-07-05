@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgroVision AI - Galeria de SVGs Animados</title>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --text-primary: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #10b981;
+      --border: #334155;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: var(--bg-secondary);
+      padding: 2rem;
+      border-bottom: 3px solid var(--accent);
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--accent), #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Navigation */
+    .nav-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1rem 2rem;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .nav-tab {
+      padding: 0.75rem 1.5rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .nav-tab:hover {
+      background: var(--border);
+      transform: translateY(-2px);
+    }
+
+    .nav-tab.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    /* Main Content */
+    .main-content {
+      padding: 2rem;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+
+    .svg-container {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .svg-container.active {
+      display: block;
+    }
+
+    .svg-wrapper {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .svg-wrapper svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* SVG Info */
+    .svg-info {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: var(--bg-primary);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .svg-info h3 {
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    .svg-info p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .svg-info .features {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+    }
+
+    .feature-tag {
+      padding: 0.25rem 0.75rem;
+      background: var(--accent);
+      color: var(--bg-primary);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.5rem;
+      }
+
+      .nav-tabs {
+        flex-direction: column;
+      }
+
+      .nav-tab {
+        text-align: center;
+      }
+
+      .main-content {
+        padding: 1rem;
+      }
+    }
+
+    /* Auto-refresh indicator */
+    .refresh-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: var(--bg-primary);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .refresh-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>🐄 AgroVision AI - SVGs Animados</h1>
+    <p>Demonstração em Tempo Real da Ferramenta com Animações CSS</p>
+  </header>
+
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab(0)">📊 Dashboard Completo</button>
+    <button class="nav-tab" onclick="showTab(1)">🔍 Detecção em Tempo Real</button>
+    <button class="nav-tab" onclick="showTab(2)">📈 Estatísticas Animadas</button>
+  </nav>
+
+  <main class="main-content">
+    <!-- SVG 1: Dashboard Completo -->
+    <div class="svg-container active" id="svg-0">
+      <div class="svg-wrapper">
+        <object data="svg/dashboard-tempo-real.svg" type="image/svg+xml" width="100%"></object>
+      </div>
+      <div class="svg-info">
+        <h3>📊 Dashboard Completo em Tempo Real</h3>
+        <p>
+          Visão geral completa da ferramenta AgroVision AI em operação. Mostra animais sendo
+          detectados com bounding boxes animadas, scanning em tempo real, e painéis de estatísticas.
+        </p>
+        <div class="features">
+          <span class="feature-tag">Animais Animados</span>
+          <span class="feature-tag">Scanning CSS</span>
+          <span class="feature-tag">Bounding Boxes</span>
+          <span class="feature-tag">Stats em Tempo Real</span>
+          <span class="feature-tag">Gráficos Animados</span>
+        </div>
+        <div class="refresh-indicator">
+          <span class="refresh-dot"></span>
+          <span>Animações CSS contínuas - Loop automático</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SVG 2: Detecção em Tempo Real -->
+    <div class="svg-container" id="svg-1">
+      <div class="svg-wrapper">
+        <object data="svg/deteccao-tempo-real.svg" type="image/svg+xml" width="100%"></object>
+      </div>
+      <div class="svg-info">
+        <h3>🔍 Detecção em Tempo Real com Tracking</h3>
+        <p>
+          Demonstração focada nas bounding boxes de detecção, labels flutuantes,
+          informações de confiança e tracking de múltiplos animais simultaneamente.
+        </p>
+        <div class="features">
+          <span class="feature-tag">Bounding Boxes Dash</span>
+          <span class="feature-tag">Labels Flutuantes</span>
+          <span class="feature-tag">Confiança Visual</span>
+          <span class="feature-tag">Tracking Multi-Objeto</span>
+          <span class="feature-tag">Alertas de Status</span>
+        </div>
+        <div class="refresh-indicator">
+          <span class="refresh-dot"></span>
+          <span>Atualização simulada em tempo real</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SVG 3: Estatísticas Animadas -->
+    <div class="svg-container" id="svg-2">
+      <div class="svg-wrapper">
+        <object data="svg/estatisticas-animadas.svg" type="image/svg+xml" width="100%"></object>
+      </div>
+      <div class="svg-info">
+        <h3>📈 Estatísticas e Gráficos Animados</h3>
+        <p>
+          Painel analítico com métricas de desempenho, gráficos de atividade por hora,
+          distribuição de comportamento, e timeline de eventos - tudo animado com CSS.
+        </p>
+        <div class="features">
+          <span class="feature-tag">Cards Métricas</span>
+          <span class="feature-tag">Gráfico de Linha</span>
+          <span class="feature-tag">Barras Animadas</span>
+          <span class="feature-tag">Gráfico de Rosca</span>
+          <span class="feature-tag">Timeline Eventos</span>
+        </div>
+        <div class="refresh-indicator">
+          <span class="refresh-dot"></span>
+          <span>Animações de entrada e loop contínuo</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>AgroVision AI v2.0 - Sistema de Monitoramento Pecuário Inteligente</p>
+    <p style="margin-top: 0.5rem; font-size: 0.85rem;">
+      SVGs animados com CSS puro - Sem JavaScript para animações
+    </p>
+  </footer>
+
+  <script>
+    function showTab(index) {
+      // Remove active from all tabs and containers
+      document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.svg-container').forEach(container => container.classList.remove('active'));
+
+      // Add active to selected
+      document.querySelectorAll('.nav-tab')[index].classList.add('active');
+      document.querySelectorAll('.svg-container')[index].classList.add('active');
+    }
+
+    // Auto-rotate tabs every 10 seconds for demo
+    let currentTab = 0;
+    setInterval(() => {
+      currentTab = (currentTab + 1) % 3;
+      showTab(currentTab);
+    }, 10000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!--
+  AgroVision AI - Dashboard SVG Animado
+  Demonstração em Tempo Real da Ferramenta
+  ::::::::::::::::::::::::::::::::::::::::
+
+  Este SVG demonstra visualmente:
+  - Detecção de animais com bounding boxes
+  - Scanning em tempo real
+  - Animações CSS de/status
+  - Interface completa da ferramenta
+
+  Para testar: Abra este arquivo em qualquer navegador
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
+  <defs>
+    <!-- Gradientes -->
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1"/>
+    </linearGradient>
+
+    <linearGradient id="groundGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2d5a3f;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#1e3c2f;stop-opacity:1"/>
+    </linearGradient>
+
+    <linearGradient id="scanGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:0"/>
+      <stop offset="50%" style="stop-color:#10b981;stop-opacity:0.5"/>
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:0"/>
+    </linearGradient>
+
+    <linearGradient id="bboxGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#34d399;stop-opacity:1"/>
+    </linearGradient>
+
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Clip Path para área de vídeo -->
+    <clipPath id="videoArea">
+      <rect x="50" y="50" width="700" height="500" rx="10"/>
+    </clipPath>
+
+    <!-- Animações CSS incorporadas -->
+    <style>
+      <![CDATA[
+        /* Animação do animal - caminhada */
+        @keyframes animalWalk {
+          0%, 100% { transform: translateX(0) translateY(0); }
+          25% { transform: translateX(15px) translateY(-3px); }
+          50% { transform: translateX(30px) translateY(0); }
+          75% { transform: translateX(15px) translateY(-3px); }
+        }
+
+        /* Animação da linha de scanning */
+        @keyframes scanMove {
+          0% { y: 0; opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { y: 500; opacity: 0; }
+        }
+
+        /* Animação bounding box - tracejado */
+        @keyframes bboxDash {
+          to { stroke-dashoffset: -24; }
+        }
+
+        /* Animação pulse - indicador */
+        @keyframes pulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        /* Animação appearance */
+        @keyframes appear {
+          from { opacity: 0; transform: scale(0.8); }
+          to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Animação counter */
+        @keyframes counterPulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+        }
+
+        /* Animação graph bars */
+        @keyframes barGrow {
+          from { transform: scaleY(0); }
+          to { transform: scaleY(1); }
+        }
+
+        /* Classes de elementos */
+        .animal-group {
+          animation: animalWalk 4s ease-in-out infinite;
+        }
+
+        .scan-line {
+          animation: scanMove 3s ease-in-out infinite;
+        }
+
+        .detection-bbox {
+          stroke-dasharray: 8 4;
+          animation: bboxDash 1s linear infinite;
+        }
+
+        .status-dot {
+          animation: pulse 2s ease-in-out infinite;
+        }
+
+        .stat-card {
+          animation: appear 0.5s ease-out;
+        }
+
+        .counter-value {
+          animation: counterPulse 2s ease-in-out infinite;
+        }
+
+        .graph-bar {
+          transform-origin: bottom;
+          animation: barGrow 1s ease-out;
+        }
+
+        .graph-bar:nth-child(1) { animation-delay: 0.1s; }
+        .graph-bar:nth-child(2) { animation-delay: 0.2s; }
+        .graph-bar:nth-child(3) { animation-delay: 0.3s; }
+        .graph-bar:nth-child(4) { animation-delay: 0.4s; }
+        .graph-bar:nth-child(5) { animation-delay: 0.5s; }
+      ]]>
+    </style>
+  </defs>
+
+  <!-- Fundo Principal -->
+  <rect width="1200" height="800" fill="#0f172a"/>
+
+  <!-- Header -->
+  <rect width="1200" height="80" fill="#1e293b"/>
+  <rect width="1200" height="2" y="80" fill="#10b981"/>
+
+  <!-- Logo -->
+  <circle cx="50" cy="40" r="25" fill="#10b981" opacity="0.2"/>
+  <ellipse cx="50" cy="45" rx="20" ry="15" fill="#10b981"/>
+  <circle cx="42" cy="40" r="3" fill="white"/>
+  <circle cx="58" cy="40" r="3" fill="white"/>
+
+  <!-- Texto Logo -->
+  <text x="90" y="35" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#10b981">
+    AgroVision AI
+  </text>
+  <text x="90" y="55" font-family="Arial, sans-serif" font-size="12" fill="#94a3b8">
+    Monitoramento Pecuário Inteligente
+  </text>
+
+  <!-- Status "Em Tempo Real" -->
+  <g transform="translate(1050, 25)">
+    <rect width="130" height="30" rx="15" fill="#10b981" opacity="0.2"/>
+    <circle cx="15" cy="15" r="6" fill="#10b981" class="status-dot"/>
+    <text x="30" y="20" font-family="Arial, sans-serif" font-size="12" fill="#10b981" font-weight="bold">
+      TEMPO REAL
+    </text>
+  </g>
+
+  <!-- Área Principal - Video Feed -->
+  <g transform="translate(40, 110)">
+    <!-- Background do Vídeo -->
+    <rect width="800" height="550" rx="15" fill="#1e293b"/>
+    <rect x="50" y="50" width="700" height="500" rx="10" fill="url(#skyGradient)" clip-path="url(#videoArea)"/>
+
+    <!-- Chão/Grama -->
+    <ellipse cx="400" cy="500" rx="350" ry="60" fill="url(#groundGradient)" opacity="0.8"/>
+
+    <!-- Cerca -->
+    <g opacity="0.8">
+      <rect x="80" y="320" width="10" height="180" fill="#5d4e37" rx="2"/>
+      <rect x="200" y="320" width="10" height="180" fill="#5d4e37" rx="2"/>
+      <rect x="320" y="320" width="10" height="180" fill="#5d4e37" rx="2"/>
+      <rect x="440" y="320" width="10" height="180" fill="#5d4e37" rx="2"/>
+      <rect x="560" y="320" width="10" height="180" fill="#5d4e37" rx="2"/>
+      <rect x="680" y="320" width="10" height="180" fill="#5d4e37" rx="2"/>
+      <rect x="80" y="360" width="600" height="8" fill="#7a6b4f" rx="2"/>
+      <rect x="80" y="400" width="600" height="8" fill="#7a6b4f" rx="2"/>
+    </g>
+
+    <!-- Animal 1 - Vaca -->
+    <g class="animal-group" transform="translate(150, 380)">
+      <!-- Bounding Box -->
+      <rect x="-10" y="-60" width="140" height="100" fill="none" stroke="url(#bboxGradient)" stroke-width="2" class="detection-bbox" rx="5"/>
+
+      <!-- Corpo -->
+      <ellipse cx="60" cy="20" rx="55" ry="30" fill="#4a4a4a" stroke="#2a2a2a" stroke-width="2"/>
+
+      <!-- Cabeça -->
+      <circle cx="100" cy="10" r="18" fill="#5a5a5a" stroke="#2a2a2a" stroke-width="2"/>
+
+      <!-- Olho -->
+      <circle cx="105" cy="8" r="3" fill="#1a1a1a"/>
+      <circle cx="106" cy="7" r="1" fill="white"/>
+
+      <!-- Orelhas -->
+      <ellipse cx="95" cy="-5" rx="6" ry="10" fill="#5a5a5a"/>
+      <ellipse cx="110" cy="-5" rx="6" ry="10" fill="#5a5a5a"/>
+
+      <!-- Patas -->
+      <rect x="25" y="45" width="12" height="30" fill="#3a3a3a" rx="4"/>
+      <rect x="45" y="45" width="12" height="30" fill="#3a3a3a" rx="4"/>
+      <rect x="65" y="45" width="12" height="30" fill="#3a3a3a" rx="4"/>
+      <rect x="85" y="45" width="12" height="30" fill="#3a3a3a" rx="4"/>
+
+      <!-- Label de Detecção -->
+      <rect x="-5" y="-55" width="70" height="20" fill="#1e293b" opacity="0.9" rx="4"/>
+      <text x="30" y="-40" font-family="Arial" font-size="10" fill="#10b981" text-anchor="middle" font-weight="bold">
+        #001 145kg
+      </text>
+    </g>
+
+    <!-- Animal 2 - Bezerro -->
+    <g class="animal-group" transform="translate(400, 400)" style="animation-delay: 0.5s;">
+      <!-- Bounding Box -->
+      <rect x="-8" y="-45" width="100" height="75" fill="none" stroke="#34d399" stroke-width="2" class="detection-bbox" rx="5"/>
+
+      <!-- Corpo -->
+      <ellipse cx="45" cy="15" rx="40" ry="22" fill="#5a5a5a" stroke="#2a2a2a" stroke-width="2"/>
+
+      <!-- Cabeça -->
+      <circle cx="75" cy="5" r="13" fill="#6a6a6a" stroke="#2a2a2a" stroke-width="2"/>
+
+      <!-- Olho -->
+      <circle cx="78" cy="3" r="2" fill="#1a1a1a"/>
+
+      <!-- Patas -->
+      <rect x="20" y="35" width="8" height="22" fill="#3a3a3a" rx="3"/>
+      <rect x="35" y="35" width="8" height="22" fill="#3a3a3a" rx="3"/>
+      <rect x="50" y="35" width="8" height="22" fill="#3a3a3a" rx="3"/>
+      <rect x="65" y="35" width="8" height="22" fill="#3a3a3a" rx="3"/>
+
+      <!-- Label -->
+      <rect x="-3" y="-40" width="65" height="18" fill="#1e293b" opacity="0.9" rx="4"/>
+      <text x="30" y="-27" font-family="Arial" font-size="9" fill="#34d399" text-anchor="middle" font-weight="bold">
+        #002 78kg
+      </text>
+    </g>
+
+    <!-- Animal 3 - Touro -->
+    <g class="animal-group" transform="translate(600, 390)" style="animation-delay: 1s;">
+      <!-- Bounding Box -->
+      <rect x="-12" y="-65" width="150" height="110" fill="none" stroke="#f59e0b" stroke-width="2" class="detection-bbox" rx="5"/>
+
+      <!-- Corpo -->
+      <ellipse cx="65" cy="25" rx="60" ry="35" fill="#3a3a3a" stroke="#1a1a1a" stroke-width="2"/>
+
+      <!-- Cabeça -->
+      <circle cx="110" cy="15" r="20" fill="#4a4a4a" stroke="#1a1a1a" stroke-width="2"/>
+
+      <!-- Chifres -->
+      <path d="M 100 5 L 95 -10 L 105 -5 Z" fill="#d4a574"/>
+      <path d="M 120 5 L 125 -10 L 115 -5 Z" fill="#d4a574"/>
+
+      <!-- Olho -->
+      <circle cx="115" cy="12" r="3" fill="#1a1a1a"/>
+      <circle cx="116" cy="10" r="1" fill="white"/>
+
+      <!-- Patas -->
+      <rect x="30" y="55" width="14" height="35" fill="#2a2a2a" rx="5"/>
+      <rect x="50" y="55" width="14" height="35" fill="#2a2a2a" rx="5"/>
+      <rect x="75" y="55" width="14" height="35" fill="#2a2a2a" rx="5"/>
+      <rect x="95" y="55" width="14" height="35" fill="#2a2a2a" rx="5"/>
+
+      <!-- Label -->
+      <rect x="-7" y="-60" width="75" height="20" fill="#1e293b" opacity="0.9" rx="4"/>
+      <text x="30" y="-45" font-family="Arial" font-size="10" fill="#f59e0b" text-anchor="middle" font-weight="bold">
+        #003 210kg
+      </text>
+    </g>
+
+    <!-- Linha de Scanning -->
+    <rect class="scan-line" x="50" y="0" width="700" height="4" fill="url(#scanGradient)" filter="url(#glow)"/>
+
+    <!-- Overlay de Informações -->
+    <g transform="translate(60, 80)">
+      <rect width="200" height="60" rx="8" fill="#1e293b" opacity="0.85"/>
+      <text x="10" y="25" font-family="Arial" font-size="12" fill="#94a3b8">Detecções Ativas</text>
+      <text x="10" y="50" font-family="Arial" font-size="24" fill="#10b981" font-weight="bold" class="counter-value">3</text>
+      <text x="50" y="50" font-family="Arial" font-size="14" fill="#94a3b8">animais</text>
+    </g>
+
+    <g transform="translate(60, 160)">
+      <rect width="200" height="60" rx="8" fill="#1e293b" opacity="0.85"/>
+      <text x="10" y="25" font-family="Arial" font-size="12" fill="#94a3b8">Peso Médio</text>
+      <text x="10" y="50" font-family="Arial" font-size="24" fill="#34d399" font-weight="bold" class="counter-value">144</text>
+      <text x="60" y="50" font-family="Arial" font-size="14" fill="#94a3b8">kg</text>
+    </g>
+
+    <!-- FPS Counter -->
+    <g transform="translate(720, 60)">
+      <rect width="80" height="30" rx="6" fill="#1e293b" opacity="0.9"/>
+      <text x="10" y="20" font-family="Arial" font-size="10" fill="#94a3b8">FPS:</text>
+      <text x="40" y="20" font-family="monospace" font-size="14" fill="#10b981" font-weight="bold">30</text>
+    </g>
+  </g>
+
+  <!-- Painel Lateral - Estatísticas -->
+  <g transform="translate(880, 110)">
+    <rect width="280" height="550" rx="15" fill="#1e293b"/>
+    <text x="20" y="40" font-family="Arial" font-size="16" font-weight="bold" fill="#f1f5f9">
+      📊 Estatísticas
+    </text>
+
+    <!-- Card 1 - Total -->
+    <g transform="translate(20, 60)">
+      <rect width="240" height="70" rx="10" fill="#0f172a"/>
+      <rect x="0" y="0" width="4" height="70" fill="#10b981" rx="2"/>
+      <text x="20" y="30" font-family="Arial" font-size="12" fill="#94a3b8">Total Animais</text>
+      <text x="20" y="55" font-family="Arial" font-size="28" fill="#f1f5f9" font-weight="bold" class="counter-value">3</text>
+    </g>
+
+    <!-- Card 2 - Peso Médio -->
+    <g transform="translate(20, 150)">
+      <rect width="240" height="70" rx="10" fill="#0f172a"/>
+      <rect x="0" y="0" width="4" height="70" fill="#34d399" rx="2"/>
+      <text x="20" y="30" font-family="Arial" font-size="12" fill="#94a3b8">Peso Médio</text>
+      <text x="20" y="55" font-family="Arial" font-size="28" fill="#f1f5f9" font-weight="bold">144 kg</text>
+    </g>
+
+    <!-- Card 3 - Comportamento -->
+    <g transform="translate(20, 240)">
+      <rect width="240" height="70" rx="10" fill="#0f172a"/>
+      <rect x="0" y="0" width="4" height="70" fill="#f59e0b" rx="2"/>
+      <text x="20" y="30" font-family="Arial" font-size="12" fill="#94a3b8">Comportamento</text>
+      <text x="20" y="55" font-family="Arial" font-size="28" fill="#f1f5f9" font-weight="bold">🟢 Calmo</text>
+    </g>
+
+    <!-- Card 4 - Tempo Sessão -->
+    <g transform="translate(20, 330)">
+      <rect width="240" height="70" rx="10" fill="#0f172a"/>
+      <rect x="0" y="0" width="4" height="70" fill="#3b82f6" rx="2"/>
+      <text x="20" y="30" font-family="Arial" font-size="12" fill="#94a3b8">Tempo Sessão</text>
+      <text x="20" y="55" font-family="monospace" font-size="24" fill="#f1f5f9" font-weight="bold">00:00</text>
+    </g>
+
+    <!-- Gráfico de Atividade -->
+    <g transform="translate(20, 420)">
+      <text x="0" y="0" font-family="Arial" font-size="14" fill="#94a3b8">Atividade por Hora</text>
+      <rect x="0" y="15" width="240" height="80" rx="8" fill="#0f172a"/>
+
+      <!-- Barras do Gráfico -->
+      <g transform="translate(20, 80)">
+        <rect class="graph-bar" x="0" y="-40" width="30" height="40" fill="#10b981" rx="4"/>
+        <rect class="graph-bar" x="40" y="-55" width="30" height="55" fill="#34d399" rx="4"/>
+        <rect class="graph-bar" x="80" y="-35" width="30" height="35" fill="#10b981" rx="4"/>
+        <rect class="graph-bar" x="120" y="-60" width="30" height="60" fill="#34d399" rx="4"/>
+        <rect class="graph-bar" x="160" y="-45" width="30" height="45" fill="#10b981" rx="4"/>
+      </g>
+
+      <!-- Labels X -->
+      <text x="35" y="105" font-family="Arial" font-size="10" fill="#64748b">00:00</text>
+      <text x="135" y="105" font-family="Arial" font-size="10" fill="#64748b">12:00</text>
+      <text x="225" y="105" font-family="Arial" font-size="10" fill="#64748b">23:59</text>
+    </g>
+  </g>
+
+  <!-- Footer -->
+  <rect width="1200" height="60" y="740" fill="#1e293b"/>
+  <text x="600" y="775" font-family="Arial" font-size="12" fill="#64748b" text-anchor="middle">
+    AgroVision AI v2.0 - Sistema de Monitoramento Pecuário Inteligente
+  </text>
+
+  <!-- Elementos Decorativos Animados -->
+  <g transform="translate(1150, 760)">
+    <circle cx="10" cy="10" r="5" fill="#10b981" class="status-dot"/>
+  </g>
+</svg>
