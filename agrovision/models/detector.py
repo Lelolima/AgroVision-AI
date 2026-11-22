@@ -149,7 +149,7 @@ class AnimalDetector:
                         bbox=[int(x1), int(y1), int(x2), int(y2)],
                         confidence=conf,
                         class_id=cls_id,
-                        class_name=self.ANIMAL_CLASSES.get(cls_id, "animal")
+                        class_name=self._class_name(result, cls_id)
                     ))
 
             logger.debug(f"Detectados {len(detections)} animais")
@@ -158,6 +158,20 @@ class AnimalDetector:
         except Exception as e:
             logger.error(f"Erro na detecção: {e}")
             return []
+
+    # Tradução de nomes COCO (modelos YOLO pré-treinados) para português
+    COCO_TRANSLATION = {"cow": "vaca", "horse": "cavalo", "sheep": "ovelha", "pig": "porco"}
+
+    def _class_name(self, result, cls_id: int) -> str:
+        """Usa os nomes do próprio modelo; ANIMAL_CLASSES só se o modelo não expõe nomes.
+
+        Antes, um YOLO COCO (classe 0 = "person") rotulava pessoas como "vaca".
+        """
+        names = getattr(result, "names", None) or {}
+        name = names.get(cls_id) if isinstance(names, dict) else None
+        if name is None:
+            return self.ANIMAL_CLASSES.get(cls_id, "animal")
+        return self.COCO_TRANSLATION.get(name, name)
 
     def _simulate_detection(self, image) -> List[Detection]:
         """Gera detecções simuladas para testes/demonstração"""
@@ -168,13 +182,11 @@ class AnimalDetector:
         detections = []
 
         for i in range(num_animals):
+            x1 = random.randint(50, 500)
+            y1 = random.randint(50, 300)
             detections.append(Detection(
-                bbox=[
-                    random.randint(50, 500),
-                    random.randint(50, 300),
-                    random.randint(80, 150),
-                    random.randint(60, 120)
-                ],
+                # formato [x1, y1, x2, y2] (antes gerava x2 < x1)
+                bbox=[x1, y1, x1 + random.randint(80, 150), y1 + random.randint(60, 120)],
                 confidence=random.uniform(0.85, 0.99),
                 class_id=random.randint(0, 2),
                 class_name=random.choice(["vaca", "bezerro", "touro"])

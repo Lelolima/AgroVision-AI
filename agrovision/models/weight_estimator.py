@@ -40,7 +40,7 @@ class WeightEstimator:
     # Baseado em: Weight = a * (height^2) * length + b
     BREED_COEFFICIENTS = {
         "nelore": {"a": 0.00015, "b": 50},
-        "angu s": {"a": 0.00018, "b": 60},
+        "angus": {"a": 0.00018, "b": 60},
         "holandes": {"a": 0.00020, "b": 80},
         "default": {"a": 0.00017, "b": 55},
     }

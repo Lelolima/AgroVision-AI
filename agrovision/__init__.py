@@ -6,11 +6,23 @@ __version__ = "2.0.0"
 __author__ = "Leonardo Lima"
 __email__ = "contato@agrovision.ai"
 
-from agrovision.api.app import app
-from agrovision.models.detector import AnimalDetector
-from agrovision.models.tracker import AnimalTracker
-from agrovision.models.weight_estimator import WeightEstimator
-from agrovision.models.behavior_classifier import BehaviorClassifier
+_LAZY = {
+    "app": "agrovision.api.app",
+    "AnimalDetector": "agrovision.models.detector",
+    "AnimalTracker": "agrovision.models.tracker",
+    "WeightEstimator": "agrovision.models.weight_estimator",
+    "BehaviorClassifier": "agrovision.models.behavior_classifier",
+}
+
+
+def __getattr__(name):
+    """Importação preguiçosa (evita carregar torch/FastAPI ao importar o pacote)."""
+    if name in _LAZY:
+        import importlib
+
+        return getattr(importlib.import_module(_LAZY[name]), name)
+    raise AttributeError(name)
+
 
 __all__ = [
     "app",

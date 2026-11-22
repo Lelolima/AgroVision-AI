@@ -18,59 +18,79 @@ Sistema de visão computacional para monitoramento de animais em ambientes agrí
 
 ## 📋 Pré-requisitos
 
-- Python 3.9+
-- NVIDIA GPU (opcional, para inferência acelerada)
-- Docker e Docker Compose (para deploy containerizado)
+- Python 3.10+ (validado em 3.11)
+- NVIDIA GPU (opcional)
+- Docker e Docker Compose (opcional)
+
+## ⚠️ Modo simulação (leia antes de usar)
+
+O repositório **não inclui pesos YOLO nem modelo de peso LightGBM**. Sem o arquivo indicado em
+`YOLO_MODEL` (caminho relativo ao diretório de execução), o detector entra em **modo simulação**
+e gera detecções **aleatórias**. Desde a auditoria de 2026-11-22 todas as respostas indicam isso:
+
+- `GET /api/health` → `"simulation_mode": true`
+- `POST /api/upload/video`, `POST /api/analyze/image` → `"simulated": true`
+- WebSocket `/ws/detect` → `"status": "simulated"`
+
+Sem `weight_model.pkl`, o peso é estimado por fórmula aproximada (`"weight_method": "formula"`).
 
 ## 🔧 Instalação
-
-### 1. Clone o repositório
 
 ```bash
 git clone https://github.com/Lelolima/AgroVision-AI.git
 cd AgroVision-AI
+python -m venv .venv && .venv\Scripts\activate     # Linux/macOS: source .venv/bin/activate
+
+# CPU (recomendado para testes):
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements-dev.txt      # inclui requirements.txt + pytest/httpx/ruff
+# Opcionais (não usados pelo código atual): pip install -r requirements-optional.txt
 ```
 
-### 2. Instale as dependências
+### Modelos (opcional, para detecção real)
 
 ```bash
-pip install -r requirements.txt
+python scripts/download_models.py   # baixa yolov5s.pt via ultralytics (requer internet)
 ```
 
-### 3. Baixe os modelos pré-treinados
+Um YOLO pré-treinado em COCO detecta `cow`, `horse`, `sheep` etc.; os nomes vêm do próprio modelo
+(traduzidos para `vaca`, `cavalo`, `ovelha`, `porco`). Classes fora disso aparecem com o nome original.
 
-Execute o script de setup para baixar automaticamente os modelos:
+### Executar
 
 ```bash
-python scripts/download_models.py
+python -m agrovision.api.app        # http://localhost:8000  (docs em /docs)
+# ou: uvicorn agrovision.api.app:app --reload
 ```
 
-Ou execute manualmente:
+## 🔑 Variáveis de ambiente
 
-```bash
-python -c "from ultralytics import YOLO; YOLO('yolov5s.pt')"
-```
+Lidas por `agrovision/config/settings.py` (arquivo `.env` opcional, veja `.env.example`):
 
-### 4. Inicie o servidor
+| Variável | Padrão | Uso real |
+|----------|--------|----------|
+| `HOST`, `PORT`, `DEBUG` | `0.0.0.0`, `8000`, `True` | servidor (`python -m agrovision.api.app`) |
+| `ALLOWED_ORIGINS` | `*` | CORS; com `*` as credenciais ficam desabilitadas |
+| `YOLO_MODEL` | `yolov5s.pt` | caminho do peso YOLO |
+| `CONFIDENCE_THRESHOLD` | `0.5` | limiar de detecção |
+| `MAX_VIDEO_SIZE_MB` | `500` | limite de upload |
+| `FRAME_SKIP` | `1` | frames pulados entre processamentos |
 
-```bash
-# Modo desenvolvimento
-python -m agrovision.api.app
-
-# Modo produção com Docker
-docker-compose up
-```
+As demais (`DATABASE_URL`, `EDGE_MODE`, `AWS_*`, ...) existem em `Settings` mas não são usadas pelo código atual.
 
 ## 🌐 API Endpoints
 
 | Endpoint | Método | Descrição |
 |----------|--------|-----------|
-| `/` | GET | Dashboard web com SVGs animados |
-| `/api/health` | GET | Health check |
-| `/api/upload/video` | POST | Upload de vídeo para análise |
-| `/api/analyze/stream` | POST | Análise de stream em tempo real |
-| `/api/results/{job_id}` | GET | Resultados de análise |
-| `/ws/detect` | WebSocket | Detecção em tempo real |
+| `/` | GET | Dashboard web estático |
+| `/api/health` | GET | Health check + `simulation_mode` |
+| `/api/upload/video` | POST | Processa até 100 frames do vídeo (detecção, tracking, peso, comportamento) |
+| `/api/analyze/video` | POST | Igual a `/api/upload/video` |
+| `/api/analyze/image` | POST | Detecção em uma imagem (JPG/PNG/BMP) |
+| `/api/analyze/stream` | POST | Informativo: use o WebSocket |
+| `/ws/detect` | WebSocket | Envie `{"frame": "<JPEG/PNG em base64>"}` |
+
+`/api/results/{job_id}` **não está implementado** (não há persistência).
 
 ## 🖥️ Interface Web
 
@@ -182,11 +202,8 @@ AgroVision-AI/
 ## 🧪 Testes
 
 ```bash
-# Testes unitários
-pytest tests/ -v
-
-# Teste de integração com Docker
-docker-compose -f docker-compose.test.yml up
+python -m pytest -q                 # usa imagens/vídeos sintéticos; não requer GPU nem pesos
+ruff check --select E9,F63,F7,F82 .
 ```
 
 ## 📝 Documentação
