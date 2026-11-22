@@ -1,0 +1,11 @@
+# Opcionais: não importados pelo código atual (planejados no roadmap).
+# O pacote "sort>=0.3.1" foi removido: não existe no PyPI e impedia a instalação.
+deep-sort-realtime>=1.3.0
+filterpy>=1.4.5
+scikit-learn>=1.2.0
+sqlalchemy>=2.0.0
+aiosqlite>=0.19.0
+asyncpg>=0.28.0
+aiofiles>=23.1.0
+onnxruntime>=1.15.0
+openvino>=2024.0.0
