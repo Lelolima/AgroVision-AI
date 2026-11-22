@@ -46,7 +46,8 @@ async def process_video(
         video_path = str(file)
 
     results = {
-        "video_path": video_path,
+        # antes: "video_path" expunha o caminho temporário do servidor
+        "filename": Path(getattr(file, "filename", None) or video_path).name,
         "frames_processed": 0,
         "detections": [],
         "tracks": [],
